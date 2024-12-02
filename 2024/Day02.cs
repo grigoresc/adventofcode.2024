@@ -72,7 +72,7 @@ namespace _2024
 
         public Day02(ITestOutputHelper output)
         {
-            this.Setup<Day02>(output);
+            this.Setup(output);
         }
 
     }
