@@ -1,6 +1,4 @@
-﻿using System;
-using System.Text.RegularExpressions;
-using System.Linq;
+﻿using System.Text.RegularExpressions;
 
 
 namespace aoc.common
@@ -27,7 +25,7 @@ namespace aoc.common
             return Regex.Replace(line, splitPattern, " ").Trim().Split(' ');
         }
 
-        public static long[] ReadNumbers(string line)
+        public static long[] ReadNumbers(this string line)
         {
             return ReadTokens(line, @"[^\-\d]+").Select(long.Parse).ToArray();
         }

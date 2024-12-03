@@ -1,0 +1,71 @@
+﻿using aoc.common;
+using System.Text.RegularExpressions;
+using Xunit.Abstractions;
+
+namespace _2024
+{
+    public class Day03
+    {
+        [Theory]
+        [InlineData("Day03.txt", 181345830)]
+        [InlineData(@"xmul(2,4)%&mul[3,7]!@^do_not_mul(5,5)+mul(32,64]then(mul(11,8)mul(8,5))", 161)]
+        public void Solve1(string input, int sln)
+        {
+            var lines = input.ParseAsLines();
+            var regex = new Regex(@"mul\([\d]{1,3},[\d]{1,3}\)");
+
+            var cnt = 0L;
+            foreach (var line in lines)
+            {
+                var matches = regex.Matches(line);
+                foreach (Match m in matches)
+                {
+                    var n = m.Value.ReadNumbers();
+                    cnt += n[0] * n[1];
+                }
+            }
+
+            cnt.Dump().AssertSolved(sln);
+        }
+
+        [Theory]
+        [InlineData("Day03.txt", 98729041)]
+        [InlineData(@"xmul(2,4)&mul[3,7]!^don't()_mul(5,5)+mul(32,64](mul(11,8)undo()?mul(8,5))", 48)]
+        public void Solve2(string input, int sln)
+        {
+            var lines = input.ParseAsLines();
+            var regex = new Regex(@"(mul\([\d]{1,3},[\d]{1,3}\))|(don't\(\))|(do\(\))");
+
+            var cnt = 0L;
+            var active = true;
+            foreach (var line in lines)
+            {
+                var matches = regex.Matches(line);
+                foreach (Match m in matches)
+                {
+                    if (m.Value == "do()")
+                    {
+                        active = true;
+                        continue;
+                    }
+                    else if (m.Value == "don't()")
+                    {
+                        active = false;
+                        continue;
+                    }
+                    var n = m.Value.ReadNumbers();
+                    if (active)
+                        cnt += n[0] * n[1];
+                }
+            }
+
+            cnt.Dump().AssertSolved(sln);
+        }
+
+        public Day03(ITestOutputHelper output)
+        {
+            this.Setup(output);
+        }
+
+    }
+}
