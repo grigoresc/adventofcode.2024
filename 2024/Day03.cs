@@ -14,18 +14,18 @@ namespace _2024
             var lines = input.ParseAsLines();
             var regex = new Regex(@"mul\([\d]{1,3},[\d]{1,3}\)");
 
-            var cnt = 0L;
+            var res = 0L;
             foreach (var line in lines)
             {
                 var matches = regex.Matches(line);
                 foreach (Match m in matches)
                 {
                     var n = m.Value.ReadNumbers();
-                    cnt += n[0] * n[1];
+                    res += n[0] * n[1];
                 }
             }
 
-            cnt.Dump().AssertSolved(sln);
+            res.Dump().AssertSolved(sln);
         }
 
         [Theory]
@@ -36,7 +36,7 @@ namespace _2024
             var lines = input.ParseAsLines();
             var regex = new Regex(@"(mul\([\d]{1,3},[\d]{1,3}\))|(don't\(\))|(do\(\))");
 
-            var cnt = 0L;
+            var res = 0L;
             var active = true;
             foreach (var line in lines)
             {
@@ -55,11 +55,11 @@ namespace _2024
                     }
                     var n = m.Value.ReadNumbers();
                     if (active)
-                        cnt += n[0] * n[1];
+                        res += n[0] * n[1];
                 }
             }
 
-            cnt.Dump().AssertSolved(sln);
+            res.Dump().AssertSolved(sln);
         }
 
         public Day03(ITestOutputHelper output)
