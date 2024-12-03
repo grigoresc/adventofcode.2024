@@ -1,19 +1,19 @@
 ﻿using aoc.common;
 using Xunit.Abstractions;
 
-namespace _2024
+namespace day02
 {
-    public class Day02
+    public class Solve
     {
         [Theory]
-        [InlineData("Day02.txt", 218, 290)]
+        [InlineData("input.txt", 218, 290)]
         [InlineData(@"7 6 4 2 1
 1 2 7 8 9
 9 7 6 2 1
 1 3 2 4 5
 8 6 4 4 1
 1 3 6 7 9", 2, 4)]
-        public void Solve(string input, int sln1, int sln2)
+        public void Both(string input, int sln1, int sln2)
         {
             var lines = input.ParseAsLines();
 
@@ -70,7 +70,7 @@ namespace _2024
             return CheckRules(vals, inc, diffsOk);
         }
 
-        public Day02(ITestOutputHelper output)
+        public Solve(ITestOutputHelper output)
         {
             this.Setup(output);
         }

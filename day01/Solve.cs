@@ -1,9 +1,9 @@
 ﻿using aoc.common;
 using Xunit.Abstractions;
 
-namespace _2024
+namespace day01
 {
-    public class Day01
+    public class Solve
     {
         [Theory]
         [InlineData(@"3   4
@@ -12,8 +12,8 @@ namespace _2024
 1   3
 3   9
 3   3", 11, 31)]
-        [InlineData("Day01.txt", 3508942, 26593248)]
-        public void Solve(string input, int sln1, int sln2)
+        [InlineData("input.txt", 3508942, 26593248)]
+        public void Both(string input, int sln1, int sln2)
         {
             var lines = input.ParseAsLines();
 
@@ -46,7 +46,7 @@ namespace _2024
             sum2.Dump().AssertSolved(sln2);
         }
 
-        public Day01(ITestOutputHelper output)
+        public Solve(ITestOutputHelper output)
         {
             this.Setup(output);
         }

@@ -2,14 +2,14 @@
 using System.Text.RegularExpressions;
 using Xunit.Abstractions;
 
-namespace _2024
+namespace day03
 {
-    public class Day03
+    public class Solve
     {
         [Theory]
-        [InlineData("Day03.txt", 181345830)]
+        [InlineData("input.txt", 181345830)]
         [InlineData(@"xmul(2,4)%&mul[3,7]!@^do_not_mul(5,5)+mul(32,64]then(mul(11,8)mul(8,5))", 161)]
-        public void Solve1(string input, int sln)
+        public void Part1(string input, int sln)
         {
             var lines = input.ParseAsLines();
             var regex = new Regex(@"mul\([\d]{1,3},[\d]{1,3}\)");
@@ -29,9 +29,9 @@ namespace _2024
         }
 
         [Theory]
-        [InlineData("Day03.txt", 98729041)]
+        [InlineData("input.txt", 98729041)]
         [InlineData(@"xmul(2,4)&mul[3,7]!^don't()_mul(5,5)+mul(32,64](mul(11,8)undo()?mul(8,5))", 48)]
-        public void Solve2(string input, int sln)
+        public void Part2(string input, int sln)
         {
             var lines = input.ParseAsLines();
             var regex = new Regex(@"(mul\([\d]{1,3},[\d]{1,3}\))|(don't\(\))|(do\(\))");
@@ -62,7 +62,7 @@ namespace _2024
             res.Dump().AssertSolved(sln);
         }
 
-        public Day03(ITestOutputHelper output)
+        public Solve(ITestOutputHelper output)
         {
             this.Setup(output);
         }
