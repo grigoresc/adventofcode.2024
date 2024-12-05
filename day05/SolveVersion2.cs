@@ -3,7 +3,7 @@ using Xunit.Abstractions;
 
 namespace day05
 {
-    public class SolverVersion2
+    public class SolveVersion2
     {
         public class PageComparer(HashSet<Tuple<long, long>> order) : IComparer<long>
         {
@@ -61,7 +61,7 @@ namespace day05
             res2.Dump().AssertSolved(sln2);
         }
 
-        public SolverVersion2(ITestOutputHelper output)
+        public SolveVersion2(ITestOutputHelper output)
         {
             this.Setup(output);
         }
