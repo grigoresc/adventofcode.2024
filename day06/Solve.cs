@@ -8,10 +8,9 @@ namespace day06
         [Theory]
         [InlineData("input.txt", 4656, 1575)]
         [InlineData(@"sample.txt", 41, 6)]
-        public void Both(string input, long sln, long sln2)
+        public void Both(string input, long sln1, long sln2)
         {
             var matrix = input.ParseAsLines().ToCharMatrix();
-            var cnt2 = 0L;
             var len = matrix.GetLength(0);
             var ci = 0; var cj = 0;
             for (int i = 0; i < len; i++)
@@ -27,29 +26,31 @@ namespace day06
 
             var dir = Dir.N;
 
+            var run1 = matrix.Clone() as char[,];
+            Run(run1, ci, cj, dir, len);
+            var cnt1 = 0L;
             for (int i = 0; i < len; i++)
                 for (int j = 0; j < len; j++)
                 {
-                    if (matrix[i, j] == '.')
+                    if (run1[i, j] == 'X')
+                        cnt1++;
+                }
+            cnt1.AssertSolved(sln1).Dump();
+
+            var cnt2 = 0L;
+            dir = Dir.N;
+            for (int i = 0; i < len; i++)
+                for (int j = 0; j < len; j++)
+                {
+                    if (run1[i, j] == 'X')//we try blocking this one
                     {
+                        var run2 = matrix.Clone() as char[,];
+                        run2[i, j] = '#';
 
-                        var matrixWip = matrix.Clone() as char[,];
-
-                        matrixWip[i, j] = '#';
-
-                        if (!Run(matrixWip, ci, cj, dir, len))
+                        if (!Run(run2, ci, cj, dir, len))
                             cnt2++;
                     }
                 }
-            Run(matrix, ci, cj, dir, len);
-            var cnt = 0L;
-            for (int i = 0; i < len; i++)
-                for (int j = 0; j < len; j++)
-                {
-                    if (matrix[i, j] == 'X')
-                        cnt++;
-                }
-            cnt.AssertSolved(sln).Dump();
             cnt2.AssertSolved(sln2).Dump();
         }
 
@@ -59,7 +60,7 @@ namespace day06
             var loopcnt = 0;
             while (true)
             {
-                if (loopcnt > len * len)
+                if (loopcnt > len * len)//todo - something that can be improved here.. (memorize the directions)
                     return false;
                 //next pos
                 var (ni, nj) = Move(dir, ci, cj);

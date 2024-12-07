@@ -1,7 +1,7 @@
 ﻿using aoc.common;
 using Xunit.Abstractions;
 
-namespace day7
+namespace day07
 {
     public class Solve
     {
