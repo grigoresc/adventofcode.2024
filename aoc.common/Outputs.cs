@@ -19,7 +19,14 @@ public static class Outputs
                 return Console.WriteLine;
         }
     }
-
+    public static void DumpMap(this string[] map, string? title = "")
+    {
+        Prints.printItem($"~~~~~~~~~~~~~~{title}~~~~~~~~~~~~~~", printer);
+        foreach (var line in map)
+        {
+            Prints.printItem(new string(line), printer);
+        }
+    }
     public static void Dump(this char[][] map, string? title = "")
     {
         Prints.printItem($"~~~~~~~~~~~~~~{title}~~~~~~~~~~~~~~", printer);
@@ -29,7 +36,7 @@ public static class Outputs
         }
     }
 
-    public static object Dump<K,V>(this Dictionary<K,V> dict, string? expl = null)
+    public static object Dump<K, V>(this Dictionary<K, V> dict, string? expl = null)
     {
         if (!string.IsNullOrEmpty(expl))
             Prints.printItem($"{expl}", printer);

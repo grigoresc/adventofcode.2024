@@ -44,7 +44,21 @@ namespace aoc.common
         {
             return lines.Select(ReadNumbers).ToArray();
         }
+        public static char[,] ToCharMatrix(this string[] lines)
+        {
+            int rows = lines.Length;
+            int cols = lines[0].Length;
+            char[,] matrix = new char[rows, cols];
 
+            for (int i = 0; i < rows; i++)
+            {
+                for (int j = 0; j < cols; j++)
+                {
+                    matrix[i, j] = lines[i][j];
+                }
+            }
+
+            return matrix;
+        }
     }
-
 }
