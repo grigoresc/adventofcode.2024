@@ -35,7 +35,17 @@ public static class Outputs
             Prints.printItem(new string(line), printer);
         }
     }
-
+    public static void Dump(this char[,] map, string? title = "")
+    {
+        Prints.printItem($"~~~~~~~~~~~~~~{title}~~~~~~~~~~~~~~", printer);
+        for (int i = 0; i < map.GetLength(0); i++)
+        {
+            var l = "";
+            for (int j = 0; j < map.GetLength(1); j++)
+                l += map[i, j].ToString();
+            printer(l);
+        }
+    }
     public static object Dump<K, V>(this Dictionary<K, V> dict, string? expl = null)
     {
         if (!string.IsNullOrEmpty(expl))
