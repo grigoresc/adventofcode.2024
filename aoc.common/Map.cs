@@ -12,12 +12,13 @@ public class Map
         _ => throw new System.Exception("Invalid direction")
     };
 
-    public static (int, int) Move(Dir d, int i, int j) => d switch
+    public static (int l, int c) Move(Dir d, (int l, int c) pos) => Move(d, pos.l, pos.c);
+    public static (int l, int c) Move(Dir d, int l, int c) => d switch
     {
-        Dir.N => (i - 1, j),
-        Dir.E => (i, j + 1),
-        Dir.S => (i + 1, j),
-        Dir.W => (i, j - 1),
+        Dir.N => (l - 1, j: c),
+        Dir.E => (i: l, c + 1),
+        Dir.S => (l + 1, j: c),
+        Dir.W => (i: l, c - 1),
         _ => throw new System.Exception("Invalid direction")
     };
 

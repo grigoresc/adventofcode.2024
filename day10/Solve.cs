@@ -27,9 +27,9 @@ namespace day10
             if (c == '9')
                 return ([pos], 1);
             var y = from dir in new[] { Map.Dir.N, Map.Dir.E, Map.Dir.S, Map.Dir.W }
-                    let next = Map.Move(dir, pos.l, pos.c)
+                    let next = Map.Move(dir, pos)
                     where Map.IsInBounds(next, m)
-                    where m[next.Item1, next.Item2] == c + 1
+                    where m[next.l, next.c] == c + 1
                     select Compute(next, m);
             var reths = y.SelectMany(o => o.Item1).ToHashSet();
             var retc = y.Select(o => o.Item2).Sum();
