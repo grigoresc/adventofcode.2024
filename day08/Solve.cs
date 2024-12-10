@@ -55,21 +55,15 @@ namespace day08
                             var antinode2 = (pos2.Item1 - m * dx,
                                 pos2.Item2 - m * dy);
 
-                            if (ValidPos(antinode1, len))
+                            if (Map.IsInBounds(antinode1, len))
                                 antinodes.Add(antinode1);
-                            if (ValidPos(antinode2, len))
+                            if (Map.IsInBounds(antinode2, len))
                                 antinodes.Add(antinode2);
                         }
                     }
             }
 
             return antinodes;
-        }
-
-        private static bool ValidPos((int, int) antinode1, int len)
-        {
-            return 0 <= antinode1.Item1 && antinode1.Item1 < len
-            && 0 <= antinode1.Item2 && antinode1.Item2 < len;
         }
 
         public Solve(ITestOutputHelper output)

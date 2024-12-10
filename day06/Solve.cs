@@ -24,7 +24,7 @@ namespace day06
                     }
                 }
 
-            var dir = Matrix.Dir.N;
+            var dir = Map.Dir.N;
 
             var run1 = matrix.Clone() as char[,];
             Run(run1, ci, cj, dir, len);
@@ -38,7 +38,7 @@ namespace day06
             cnt1.AssertSolved(sln1).Dump();
 
             var cnt2 = 0L;
-            dir = Matrix.Dir.N;
+            dir = Map.Dir.N;
             for (int i = 0; i < len; i++)
                 for (int j = 0; j < len; j++)
                 {
@@ -54,7 +54,7 @@ namespace day06
             cnt2.AssertSolved(sln2).Dump();
         }
 
-        private bool Run(char[,] matrix, int ci, int cj, Matrix.Dir dir, int len)
+        private bool Run(char[,] matrix, int ci, int cj, Map.Dir dir, int len)
         {
             matrix[ci, cj] = '.';
             var loopcnt = 0;
@@ -63,11 +63,11 @@ namespace day06
                 if (loopcnt > len * len)//todo - something that can be improved here.. (memorize the directions)
                     return false;
                 //next pos
-                var (ni, nj) = Matrix.Move(dir, ci, cj);
-                if (Matrix.IsInBounds(ni, nj, len))
+                var (ni, nj) = Map.Move(dir, ci, cj);
+                if (Map.IsInBounds(ni, nj, len))
                     if (matrix[ni, nj] == '#')
                     {
-                        dir = Matrix.TurnRight(dir);
+                        dir = Map.TurnRight(dir);
                         continue;
                     }
                     else
@@ -85,7 +85,6 @@ namespace day06
 
             return true;
         }
-
 
         public Solve(ITestOutputHelper output)
         {

@@ -1,6 +1,6 @@
 ﻿namespace aoc.common;
 
-public class Matrix
+public class Map
 {
     public enum Dir { N, E, S, W }
     public static Dir TurnRight(Dir d) => d switch
@@ -22,4 +22,5 @@ public class Matrix
     };
 
     public static bool IsInBounds(int i, int j, int len) => i >= 0 && i < len && j >= 0 && j < len;
+    public static bool IsInBounds((int i, int j) pos, int len) => IsInBounds(pos.i, pos.j, len);
 }
