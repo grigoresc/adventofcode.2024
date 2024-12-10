@@ -24,7 +24,7 @@ namespace day06
                     }
                 }
 
-            var dir = Dir.N;
+            var dir = Matrix.Dir.N;
 
             var run1 = matrix.Clone() as char[,];
             Run(run1, ci, cj, dir, len);
@@ -38,7 +38,7 @@ namespace day06
             cnt1.AssertSolved(sln1).Dump();
 
             var cnt2 = 0L;
-            dir = Dir.N;
+            dir = Matrix.Dir.N;
             for (int i = 0; i < len; i++)
                 for (int j = 0; j < len; j++)
                 {
@@ -54,7 +54,7 @@ namespace day06
             cnt2.AssertSolved(sln2).Dump();
         }
 
-        private bool Run(char[,] matrix, int ci, int cj, Dir dir, int len)
+        private bool Run(char[,] matrix, int ci, int cj, Matrix.Dir dir, int len)
         {
             matrix[ci, cj] = '.';
             var loopcnt = 0;
@@ -63,11 +63,11 @@ namespace day06
                 if (loopcnt > len * len)//todo - something that can be improved here.. (memorize the directions)
                     return false;
                 //next pos
-                var (ni, nj) = Move(dir, ci, cj);
-                if (IsInBounds(ni, nj, len))
+                var (ni, nj) = Matrix.Move(dir, ci, cj);
+                if (Matrix.IsInBounds(ni, nj, len))
                     if (matrix[ni, nj] == '#')
                     {
-                        dir = TurnRight(dir);
+                        dir = Matrix.TurnRight(dir);
                         continue;
                     }
                     else
@@ -86,27 +86,6 @@ namespace day06
             return true;
         }
 
-        private enum Dir { N, E, S, W }
-
-        private Dir TurnRight(Dir d) => d switch
-        {
-            Dir.N => Dir.E,
-            Dir.E => Dir.S,
-            Dir.S => Dir.W,
-            Dir.W => Dir.N,
-            _ => throw new System.Exception("Invalid direction")
-        };
-
-        private (int, int) Move(Dir d, int i, int j) => d switch
-        {
-            Dir.N => (i - 1, j),
-            Dir.E => (i, j + 1),
-            Dir.S => (i + 1, j),
-            Dir.W => (i, j - 1),
-            _ => throw new System.Exception("Invalid direction")
-        };
-
-        bool IsInBounds(int i, int j, int len) => i >= 0 && i < len && j >= 0 && j < len;
 
         public Solve(ITestOutputHelper output)
         {
