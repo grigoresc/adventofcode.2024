@@ -23,25 +23,16 @@ namespace day10
 
         private (HashSet<(int, int)>, int) Compute((int l, int c) pos, char[,] m)
         {
-            if (m[pos.l, pos.c] == '9')
-                return ([pos], 1);
-            var reths = new HashSet<(int, int)>();
-            var retc = 0;
             var c = m[pos.l, pos.c];
-            foreach (var dir in new[] { Map.Dir.N, Map.Dir.E, Map.Dir.S, Map.Dir.W })
-            {
-                var (nl, nc) = Map.Move(dir, pos.l, pos.c);
-                if (Map.IsInBounds(nl, nc, m))
-                    if (m[nl, nc] == c + 1)
-                    {
-                        var (hs, cnt) = Compute((nl, nc), m);
-                        retc += cnt;
-                        foreach (var p in hs)
-                        {
-                            reths.Add(p);
-                        }
-                    }
-            }
+            if (c == '9')
+                return ([pos], 1);
+            var y = from dir in new[] { Map.Dir.N, Map.Dir.E, Map.Dir.S, Map.Dir.W }
+                    let next = Map.Move(dir, pos.l, pos.c)
+                    where Map.IsInBounds(next, m)
+                    where m[next.Item1, next.Item2] == c + 1
+                    select Compute(next, m);
+            var reths = y.SelectMany(o => o.Item1).ToHashSet();
+            var retc = y.Select(o => o.Item2).Sum();
             return (reths, retc);
         }
 
