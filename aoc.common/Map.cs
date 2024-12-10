@@ -22,5 +22,6 @@ public class Map
     };
 
     public static bool IsInBounds(int i, int j, int len) => i >= 0 && i < len && j >= 0 && j < len;
+    public static bool IsInBounds(int i, int j, char[,] m) => i >= 0 && i < m.GetLength(0) && j >= 0 && j < m.GetLength(1);
     public static bool IsInBounds((int i, int j) pos, int len) => IsInBounds(pos.i, pos.j, len);
 }
