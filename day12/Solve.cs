@@ -49,15 +49,13 @@ namespace day12
             sidesByDir[Map.Dir.S] = new List<(int, int)>();
             sidesByDir[Map.Dir.W] = new List<(int, int)>();
 
-
             while (tovisit.Any())
             {
                 var pos = tovisit.Dequeue();
 
-                if (visited.Contains(pos))
+                if (!visited.Add(pos))
                     continue;
 
-                visited.Add(pos);
                 foreach (var dir in new[] { Map.Dir.N, Map.Dir.E, Map.Dir.S, Map.Dir.W })
                 {
                     var near = Map.Move(dir, pos);
@@ -83,23 +81,16 @@ namespace day12
                     Map.Dir.N or Map.Dir.S =>
                                             (from s in side
                                              group s by s.Item1 into g
-                                             select (g.Key, g.Select(o => o.Item2).Order())),
+                                             select (g.Key, g.Select(o => o.Item2).Order().ToList())),
                     Map.Dir.E or Map.Dir.W =>
                                             (from s in side
                                              group s by s.Item2 into g
-                                             select (g.Key, g.Select(o => o.Item1).Order()))
+                                             select (g.Key, g.Select(o => o.Item1).Order().ToList()))
                 };
                 foreach (var (_, segments) in segmentsByDir)
                 {
-                    var h = 1;
-                    var prev = len;
-                    foreach (var he in segments)
-                    {
-                        if (prev + 1 < he)
-                            h++;
-                        prev = he;
-                    }
-                    sides += h;
+                    //consider a side two segments not connected
+                    sides += 1 + segments[..^1].Zip(segments[1..]).Sum(o => o.First + 1 < o.Second ? 1 : 0);
                 }
             }
             return (perimeter, area, sides);
