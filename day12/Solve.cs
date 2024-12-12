@@ -15,25 +15,22 @@ namespace day12
         public void Both(string input, long sln1, long sln2)
         {
             var map = input.ParseAsLines().ToCharMatrix();
-            var len = map.GetLength(0);
             var visited = new HashSet<(int, int)>();
             var ret1 = 0L;
             var ret2 = 0L;
-            for (int r = 0; r < len; r++)
-                for (int c = 0; c < len; c++)
-                    if (!visited.Contains((r, c)))
-                    {
-                        var (perim, area, sides) = ComputeAreaAndParameter(map, (r, c), visited);
-                        ret1 += perim * area;
-                        ret2 += sides * area;
-                    }
+            foreach (var (r, c, _) in map.Iterate())
+                if (!visited.Contains((r, c)))
+                {
+                    var (perim, area, sides) = ComputeAreaAndParameter(map, (r, c), visited);
+                    ret1 += perim * area;
+                    ret2 += sides * area;
+                }
             ret1.Dump().AssertSolved(sln1);
             ret2.Dump().AssertSolved(sln2);
         }
 
         (long, long, long) ComputeAreaAndParameter(char[,] map, (int, int) startPos, HashSet<(int, int)> visited)
         {
-            var len = map.GetLength(0);
             var tovisit = new Queue<(int, int)>();
 
             var c = map[startPos.Item1, startPos.Item2];

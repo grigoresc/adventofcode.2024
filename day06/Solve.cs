@@ -8,49 +8,30 @@ namespace day06
         [Theory]
         [InlineData("input.txt", 4656, 1575)]
         [InlineData(@"sample.txt", 41, 6)]
-        public void Both(string input, long sln1, long sln2)
+        public void Both(string input, int sln1, int sln2)
         {
             var matrix = input.ParseAsLines().ToCharMatrix();
             var len = matrix.GetLength(0);
-            var ci = 0; var cj = 0;
-            for (int i = 0; i < len; i++)
-                for (int j = 0; j < len; j++)
-                {
-                    if (matrix[i, j] == '^')
-                    {
-                        ci = i;
-                        cj = j;
-                        break;
-                    }
-                }
+
+            var (ci, cj, _) = matrix.Iterate().First(o => o.val == '^');
 
             var dir = Map.Dir.N;
 
             var run1 = matrix.Clone() as char[,];
             Run(run1, ci, cj, dir, len);
-            var cnt1 = 0L;
-            for (int i = 0; i < len; i++)
-                for (int j = 0; j < len; j++)
-                {
-                    if (run1[i, j] == 'X')
-                        cnt1++;
-                }
+            var cnt1 = run1.Iterate().Count(o => o.val == 'X');
             cnt1.AssertSolved(sln1).Dump();
 
             var cnt2 = 0L;
             dir = Map.Dir.N;
-            for (int i = 0; i < len; i++)
-                for (int j = 0; j < len; j++)
-                {
-                    if (run1[i, j] == 'X')//we try blocking this one
-                    {
-                        var run2 = matrix.Clone() as char[,];
-                        run2[i, j] = '#';
+            foreach (var (i, j, _) in run1.Iterate().Where(o => o.val == 'X'))//we try blocking this one
+            {
+                var run2 = matrix.Clone() as char[,];
+                run2[i, j] = '#';
 
-                        if (!Run(run2, ci, cj, dir, len))
-                            cnt2++;
-                    }
-                }
+                if (!Run(run2, ci, cj, dir, len))
+                    cnt2++;
+            }
             cnt2.AssertSolved(sln2).Dump();
         }
 

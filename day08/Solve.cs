@@ -13,21 +13,10 @@ namespace day08
             var matrix = input.ParseAsLines().ToCharMatrix();
             var len = matrix.GetLength(0);
 
-            var antennas = new Dictionary<char, List<(int, int)>>();
-            for (int i = 0; i < len; i++)
-            {
-                for (int j = 0; j < len; j++)
-                {
-                    if (matrix[i, j] != '.')
-                    {
-                        if (!antennas.ContainsKey(matrix[i, j]))
-                        {
-                            antennas[matrix[i, j]] = new List<(int, int)>();
-                        }
-                        antennas[matrix[i, j]].Add((i, j));
-                    }
-                }
-            }
+            var antennas = matrix.Iterate()
+                .Where(o => o.val != '.')
+                .GroupBy(o => o.val)
+                .ToDictionary(g => g.Key, g => g.Select(el => (el.row, el.col)).ToList());
 
             var cnt1 = ComputeAntinodes(antennas, len, (1, 1)).Count;
             var cnt2 = ComputeAntinodes(antennas, len, (0, len)).Count;

@@ -13,10 +13,9 @@ namespace day10
         {
             var matrix = input.ParseAsLines().ToCharMatrix();
 
-            var x = from i in Enumerable.Range(0, matrix.GetLength(0))
-                    from j in Enumerable.Range(0, matrix.GetLength(1))
-                    where matrix[i, j] == '0'
-                    select Compute((i, j), matrix);
+            var x = from o in matrix.Iterate()
+                    where o.val == '0'
+                    select Compute((o.row, c: o.col), matrix);
             x.Sum(o => o.Item1.Count).Dump().AssertSolved(sln1);
             x.Sum(o => o.Item2).Dump().AssertSolved(sln2);
         }
