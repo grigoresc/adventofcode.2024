@@ -90,7 +90,16 @@ public static class Outputs
         }
         return o;
     }
-
+    public static void Draw(this IEnumerable<(long, long)> coords, int size)
+    {
+        var m = new char[size, size];
+        for (var i = 0; i < size; i++)
+            for (var j = 0; j < size; j++)
+                m[i, j] = ' ';
+        foreach (var (x, y) in coords)
+            m[y, x] = '#';
+        m.Dump();
+    }
     public static T AssertSolved<T>(this T o, T expected)
     {
         Assert.Equal(expected, o);
