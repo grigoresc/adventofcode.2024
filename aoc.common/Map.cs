@@ -12,6 +12,14 @@ public class Map
         _ => throw new System.Exception("Invalid direction")
     };
 
+    public static IEnumerable<(int l, int c)> Adjacents((int l, int c) pos)
+    {
+        foreach (var dir in new[] { Map.Dir.N, Map.Dir.E, Map.Dir.S, Map.Dir.W })
+        {
+            var near = Map.Move(dir, pos);
+            yield return near;
+        }
+    }
     public static (int l, int c) Move(Dir d, (int l, int c) pos) => Move(d, pos.l, pos.c);
     public static (int l, int c) Move(Dir d, int l, int c) => d switch
     {

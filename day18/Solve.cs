@@ -7,15 +7,11 @@ namespace day18
     {
         [Theory]
         [InlineData("sample.txt", 12, 6 + 1, 22)]
-        //[InlineData("input.txt", 1024, 70 + 1, 360)]
+        [InlineData("input.txt", 1024, 70 + 1, 360)]
         public void Part1(string input, int cnt, int size, long sln)
         {
-            var coords = input.ParseAsLines().Select(o =>
-            {
-                var (x, y, _) = o.ReadNumbers();
-                return (x, y);
-            });
-            coords.Draw(size);
+            var coords = Parse(input);
+            //coords.Draw(size);
             var dist = Shortest(size, coords.Take(cnt));
             dist[(size - 1, size - 1)].Dump("sln").AssertSolved(sln);
         }
@@ -25,18 +21,14 @@ namespace day18
         [InlineData("input.txt", 70 + 1, "58,62")]
         public void Part2(string input, int size, string sln)
         {
-            var coords = input.ParseAsLines().Select(o =>
-            {
-                var (x, y, _) = o.ReadNumbers();
-                return (x, y);
-            }).ToArray();
+            var coords = Parse(input);
 
             var cntMax = coords.Count();
             var cntMin = 1;
+
             while (cntMin + 1 < cntMax)
             {
                 var cnt = (cntMax + cntMin) / 2;
-                $"{cntMin},{cntMax},{cnt}".Dump();
                 var dist = Shortest(size, coords.Take(cnt));
 
                 if (!dist.ContainsKey((size - 1, size - 1)))
@@ -51,6 +43,17 @@ namespace day18
 
             $"{coords[cntMin].x},{coords[cntMin].y}".Dump().AssertSolved(sln);
         }
+
+        private static (long x, long y)[] Parse(string input)
+        {
+            var coords = input.ParseAsLines().Select(o =>
+            {
+                var (x, y, _) = o.ReadNumbers();
+                return (x, y);
+            }).ToArray();
+            return coords;
+        }
+
         private Dictionary<(long, long), long> Shortest(int size, IEnumerable<(long x, long y)> coords)
         {
             var pos = (0, 0);
@@ -64,9 +67,8 @@ namespace day18
             while (tovisit.Count > 0)
             {
                 pos = tovisit.Dequeue();
-                foreach (var dir in new[] { Map.Dir.N, Map.Dir.E, Map.Dir.S, Map.Dir.W })
+                foreach (var near in Map.Adjacents(pos))
                 {
-                    var near = Map.Move(dir, pos);
                     if (
                         Map.IsInBounds(near, size)
                         && !coords.Contains(near)
