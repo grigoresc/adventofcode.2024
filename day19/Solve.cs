@@ -6,53 +6,42 @@ namespace day19
     public class Solve
     {
         [Theory]
-        [InlineData("sample.txt", 6)]
-        [InlineData("input.txt", 278)]
-        public void Part1(string input, long sln)
+        [InlineData("sample.txt", 6, 16)]
+        [InlineData("input.txt", 278, 569808947758890)]
+        public void Both(string input, int sln1, long sln2)
+        {
+            var (patterns, designs) = Parse(input);
+
+            var matches = (from design in designs select Match(design, patterns)).ToList();
+            var (cnt1, cnt2) = (matches.Count(x => x > 0), matches.Sum());
+
+            cnt1.Dump().AssertSolved(sln1);
+            cnt2.Dump().AssertSolved(sln2);
+        }
+
+        private static (string[] patterns, string[] designs) Parse(string input)
         {
             var l = input.ParseAsChunkOfLines();
             var patterns = l[0].ReadTokens(", ");
-            patterns.Dump();
             var designs = l[1].ParseAsLines();
-            designs.Dump();
-            var cnt = 0L;
-            foreach (var design in designs)
-            {
-                var ok = Match(design, patterns);
-                if (ok)
-                    cnt++;
-
-            }
-
-            cnt.Dump().AssertSolved(sln);
+            return (patterns, designs);
         }
 
-
-        Dictionary<string, bool> memo = new();
-        private bool Match(string design, string[] patterns)
+        Dictionary<string, long> memo = new();
+        private long Match(string design, string[] patterns)
         {
-            //throw new NotImplementedException();
             if (design == "")
-                return true;
-            //design.Dump("match");
+                return 1;
 
             if (memo.ContainsKey(design))
                 return memo[design];
 
-            var m = false;
-            foreach (var p in patterns)
-            {
-                //p.Dump("pattern");
-                if (design.Length >= p.Length && design.Substring(0, p.Length) == p)
-                    if (Match(design.Substring(p.Length), patterns))
-                    {
-                        m = true;
-                        break;
-                    }
-            }
+            var s = from p in patterns
+                    where design.Length >= p.Length && design[0..p.Length] == p
+                    select Match(design[p.Length..], patterns);
 
-            memo[design] = m;
-            return m;
+            memo[design] = s.Sum();
+            return memo[design];
         }
 
         public Solve(ITestOutputHelper output)
