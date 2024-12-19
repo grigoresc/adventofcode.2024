@@ -20,7 +20,7 @@ namespace aoc.common
             return inputs;
         }
 
-        public static string[] ReadTokens(string line, string splitPattern)
+        public static string[] ReadTokens(this string line, string splitPattern)
         {
             return Regex.Replace(line, splitPattern, " ").Trim().Split(' ');
         }
