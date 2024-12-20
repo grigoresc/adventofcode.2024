@@ -9,6 +9,12 @@ public static class MatrixExtensions
                 yield return (r, c, matrix[r, c]);
     }
 
+    public static IEnumerable<((int row, int col), T val)> IteratePos<T>(this T[,] matrix)
+    {
+        for (int r = 0; r < matrix.GetLength(0); r++)
+            for (int c = 0; c < matrix.GetLength(1); c++)
+                yield return ((r, c), matrix[r, c]);
+    }
     public static char[,] ToCharMatrix(this string[] lines)
     {
         int rows = lines.Length;
