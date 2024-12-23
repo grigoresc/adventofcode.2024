@@ -6,15 +6,12 @@ namespace day23
     public class Solve
     {
         [Theory]
-        [InlineData("sample.txt", 64, 7, "co,de,ka,ta")]
-        [InlineData("input.txt", 100, 1423, "gt,ha,ir,jn,jq,kb,lr,lt,nl,oj,pp,qh,vy")]
-        public void Part1(string input, int min, long sln, string sln2)
+        [InlineData("sample.txt", 7, "co,de,ka,ta")]
+        [InlineData("input.txt", 1423, "gt,ha,ir,jn,jq,kb,lr,lt,nl,oj,pp,qh,vy")]
+        public void Both(string input, long sln1, string sln2)
         {
             var map = input.ParseAsLines();
             var links = new SortedDictionary<string, List<string>>();
-            var nodes = new SortedSet<string>();
-            var groupcnt = 0;
-            //map.Dump("map");
             foreach (var line in map)
             {
                 var link = line.ReadTokens("-").ToArray();
@@ -25,43 +22,42 @@ namespace day23
                     links[r] = new List<string>();
                 links[l].Add(r);
                 links[r].Add(l);
-                nodes.Add(l);
-                nodes.Add(r);
             }
             foreach (var k in links.Keys.ToArray())
                 links[k].Sort();
 
             var cnt = 0L;
+            foreach (var node in links.Keys)
+            {
+                cnt += FindParties([node], links, (a) => a.Length == 3 && a.Any(s => s.StartsWith("t"))).Count();
+            }
+            cnt.Dump().AssertSolved(sln1);
+
             var max = 0L;
             var str = "";
-            foreach (var node in nodes)
-            //if (node.StartsWith("t"))
+            foreach (var node in links.Keys)
             {
-                var parties = FindParties([node], links);
-                foreach (var party in parties)
+                FindParties([node], links, (a) =>
                 {
-                    if (party.Length >= 3)// && party.Any(s => s.StartsWith("t")))
+                    if (a.Length > max)
                     {
-                        party.Dump();
-                        cnt += 1;
-                        if (party.Length >= max)
-                        {
-                            max = party.Length;
-                            str = string.Join(",", party);
-                        }
+                        max = a.Length;
+                        str = string.Join(",", a);
                     }
-                }
+
+                    return false;
+                });
             }
 
             str.Dump().AssertSolved(sln2);
-            //af,ar,dd,gb,he,hq,iq,sa,td,uh,vj,vq
-            //eq,ff,gs,il,jp,kc,qk,ts,uj,wz,xj,ye
         }
 
-        private List<string[]> FindParties(string[] startingParty, SortedDictionary<string, List<string>> links)
+        private List<string[]> FindParties(string[] startingParty,
+            SortedDictionary<string, List<string>> links,
+            Func<string[], bool> stopCondition)
         {
-            //if (startingParty.Any(s => s.StartsWith("t")))
-            //    return new List<string[]> { startingParty };
+            if (stopCondition(startingParty))
+                return new List<string[]> { startingParty };
 
             HashSet<string> candidates = new HashSet<string>();
             var frst = true;
@@ -75,8 +71,6 @@ namespace day23
                 candidates.IntersectWith(links[node]);
             }
 
-            if (candidates.Count == 0)
-                return new List<string[]> { startingParty };
 
             var ret = new List<string[]>();
             foreach (var node in candidates)
@@ -87,7 +81,7 @@ namespace day23
                         ok = false;
                 if (!ok)
                     continue;
-                ret.AddRange(FindParties(startingParty.Concat([node]).ToArray(), links));
+                ret.AddRange(FindParties(startingParty.Concat([node]).ToArray(), links, stopCondition));
             }
 
             return ret;
