@@ -11,70 +11,69 @@ namespace day23
         public void Part1(string input, int min, long sln, string sln2)
         {
             var map = input.ParseAsLines();
-            var groups = new SortedDictionary<string, int>();
+            var links = new SortedDictionary<string, List<string>>();
+            var nodes = new SortedSet<string>();
             var groupcnt = 0;
             //map.Dump("map");
             foreach (var line in map)
             {
                 var link = line.ReadTokens("-").ToArray();
                 var (l, r) = (link[0], link[1]);
-                //$"{l}-{r}".Dump("line");
-
-                if (groups.ContainsKey(l) && groups.ContainsKey(r))
-                {
-                    var newval = groups[l];
-                    foreach (var gro in groups.Keys.ToArray())
-                        if (groups[gro] == groups[r])
-                            groups[gro] = newval;
-                }
-                else
-                {
-                    var g = -1;
-                    if (groups.ContainsKey(l))
-                        g = groups[l];
-                    else if (groups.ContainsKey(r))
-                        g = groups[r];
-                    else
-                        g = groupcnt++;
-                    groups[l] = g;
-                    groups[r] = g;
-                }
+                if (!links.ContainsKey(l))
+                    links[l] = new List<string>();
+                if (!links.ContainsKey(r))
+                    links[r] = new List<string>();
+                links[l].Add(r);
+                links[r].Add(l);
+                nodes.Add(l);
+                nodes.Add(r);
             }
+            foreach (var k in links.Keys.ToArray())
+                links[k].Sort();
 
-            //groups.Dump("groups");
-            var gr = groups.GroupBy(o => o.Value).Select(g => (g.Key, g.Select(o => o.Key).ToArray()));
             var cnt = 0L;
-            foreach (var group in gr)
+            foreach (var node in nodes)
+            //if (node.StartsWith("t"))
             {
-                //group.Key.Dump("group");
-
-                for (var i = 0; i < group.Item2.Length; i++)
-                    for (var j = i + 1; j < group.Item2.Length; j++)
-                        for (var k = j + 1; k < group.Item2.Length; k++)
-
-                        {
-                            var l1 = group.Item2[i];
-                            var l2 = group.Item2[j];
-                            var l3 = group.Item2[k];
-                            if (!(l1[0] == 't' || l2[0] == 't' || l3[0] == 't'))
-                                continue;
-                            var linked = true;
-                            linked &= map.Contains($"{l1}-{l2}") || map.Contains($"{l2}-{l1}");
-                            linked &= map.Contains($"{l3}-{l2}") || map.Contains($"{l2}-{l3}");
-                            linked &= map.Contains($"{l1}-{l3}") || map.Contains($"{l3}-{l1}");
-
-                            if (!linked)
-                                continue;
-                            //$"{l1}-{l2}-{l3}".Dump();
-                            {
-                                //$"found {l1}-{l2}-{l3}".Dump();
-                                cnt++;
-                            }
-                        }
-
+                var parties = FindParties([node], links);
+                foreach (var party in parties)
+                    party.Dump();
+                cnt += parties.Count;
             }
-            gr.ToArray().Dump();
+
             cnt.Dump().AssertSolved(sln);
+        }
+
+        private List<string[]> FindParties(string[] startingParty, SortedDictionary<string, List<string>> links)
+        {
+            if (startingParty.Length == 3 && startingParty.Any(s => s.StartsWith("t")))
+                return new List<string[]> { startingParty };
+
+            HashSet<string> candidates = new HashSet<string>();
+            var frst = true;
+            foreach (var node in startingParty)
+            {
+                if (frst)
+                {
+                    frst = false;
+                    candidates = new HashSet<string>(links[node]);
+                }
+                candidates.IntersectWith(links[node]);
+            }
+
+            var ret = new List<string[]>();
+            foreach (var node in candidates)
+            {
+                var ok = true;
+                foreach (var existingNode in startingParty)
+                    if (existingNode.CompareTo(node) > 0)
+                        ok = false;
+                if (!ok)
+                    continue;
+                ret.AddRange(FindParties(startingParty.Concat([node]).ToArray(), links));
+            }
+
+            return ret;
         }
 
 
